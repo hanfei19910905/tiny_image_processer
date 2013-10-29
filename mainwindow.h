@@ -18,20 +18,19 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 signals:
-    void clickImageX(int);
-    void clickImageY(int);
     void clickImage(cv::Mat&,int,int);
 
 private slots:
     void on_pushButton_2_clicked();
     void on_pushButton_clicked();
+    void frush(cv::Mat&);
 
 private:
     Ui::MainWindow *ui;
     Algo* algo;
-    cv::Mat image,result;
+    cv::Mat image;
     void mousePressEvent(QMouseEvent *);
-    void frush(cv::Mat&);
+
 };
 
 #endif // MAINWINDOW_H

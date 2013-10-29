@@ -53,38 +53,6 @@
      <string/>
     </property>
    </widget>
-   <widget class="QSpinBox" name="xShow">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>60</y>
-      <width>61</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-    <property name="maximum">
-     <number>100000</number>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="yShow">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>100</y>
-      <width>61</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-    <property name="maximum">
-     <number>100000</number>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

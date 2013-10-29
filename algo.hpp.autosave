@@ -2,8 +2,11 @@
 #define ALGO_HPP
 
 #include<QObject>
+#include<cmath>
+#include<iostream>
 #include<opencv2/opencv.hpp>
 
+const double pi = std::acos(-1.0);
 class Algo: public QObject {
     Q_OBJECT
 public:
@@ -12,23 +15,27 @@ public:
     }
 private:
     int radius;
-    int deformValue;
+    int deformAmount;
     bool enable;
 private slots :
     void DrawCircle(cv::Mat& img,int x,int y){
         cv::circle(img,cv::Point(x,y),radius,cv::Scalar(255,255,255));
         emit refrush(img);
     }
-    void SetRadius(int _r){
-        if(_r > 0 && _r * _r < MAXR){
+    void SetAttr(int _r,int _a){
+        if(_r > 0 && _r * _r < MAXR && defromeAmount > 0){
             radius = _r;
-        }
+            deformAmount = _a;
+        } 
     }
-#ifdef IWarp
+//#ifdef IWarp
     void IwarpDeform(cv::Mat& img,int x,int y,int w,int h){
-        if(!enable) return ;
+       // if(!enable) return ;
+        Mat result;
+        img.copyTo(result);
         if(x < r || x + r > w || y < r || y + r > h){
-            emit iwarp_err(QString("exceed the bound !"));
+         //   emit iwarp_err(QString("exceed the bound !"));
+            return ;
         }
         int x0 = -r, x1 = r, y0 = -r, y1 = r;
         // x0, y0 stand for the left buttom point, and x1, y1 is the oppisite
@@ -37,11 +44,19 @@ private slots :
             for(int xi = x0; xi <= x1; xi ++){
                 int len2 = (xi*xi + yi*yi) / r2; // dis^2 / r^2
                 if(len2 < MAXR){
-                    ptr = (y + yi)
-                }
+                    double deformValue = 0.1 * deformAmount * std::pow(std::cos(std::sqrt(len2) * pi) * 0.5,0.7);          
+                    double nvx = -deformValue * xi;
+                    double nvy = -deformValue * yi; // (x,y) is replaced by (nvx,nvy) 
+                    int xv,yv;
+                    Regular(nvx + x + xi , nvy + y + yi, xv,yv);
+                    for(int i = 0; i < 3; i++){
+                        result.at<cv::Vec3b>(x,y)[i] = result.at<cv::Vec3b>(xv,yv)[i];
+                    }
+                   }
             }
+        emit refush(img);
     }
-#endif
+
 signals :
     void refrush(cv::Mat&);
 };

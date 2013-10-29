@@ -16,8 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->pushButton->setEnabled(false);
     algo = new Algo();
-    connect(this,SIGNAL(clickImageX(int)), ui->xShow, SLOT(setValue(int)) );
-    connect(this,SIGNAL(clickImageY(int)), ui->yShow, SLOT(setValue(int)) );
+
     connect(this,SIGNAL(clickImage(cv::Mat&,int,int)),algo, SLOT(DrawCircle(cv::Mat&,int,int)));
     connect(algo,SIGNAL(refrush(cv::Mat&)), this, SLOT(frush(cv::Mat&)));
 }
@@ -27,14 +26,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 QImage ConvertImage(cv:: Mat img){
+   // cv::Mat img;
+   // image.copyTo(img);
     assert(img.channels() == 3);
     if(img.channels() == 3){
         cv::cvtColor(img,img,CV_BGR2RGB);
-        return QImage((const unsigned char*)(img.data),
+        QImage image = QImage((const unsigned char*)(img.data),
                       img.cols,
                       img.rows,
                       img.cols*img.channels(),
                       QImage::Format_RGB888);
+        return image;
     }
 }
 
@@ -46,19 +48,20 @@ void MainWindow::mousePressEvent(QMouseEvent *event){
         int sy = ui->label->y();
         int w = ui->label->width();
         int h = ui->label->height();
-        printf("%d %d %d %d %d %d\n",x,y,sx,sy,w,h);
+        y -= 15;
+        //printf("%d %d %d %d %d %d\n",x,y,sx,sy,w,h);
         if(x > sx && x < sx + w && y > sy && y < sy + h){
-            emit clickImage(result,x-sx,y-sy);
-            emit clickImageX(x - sx);
-            emit clickImageY(y - sy);
+            emit clickImage(image,x-sx,y-sy);
         }
     }
 }
 
-void MainWindow::frush(cv::Mat& result){
-    QImage img = ConvertImage(result);
+void MainWindow::frush(cv::Mat& image){
+
+    QImage img = ConvertImage(image);
     ui->label->setPixmap(QPixmap::fromImage(img));
     ui->label->resize(ui->label->pixmap()->size());
+    cv::cvtColor(image,image,CV_BGR2RGB);
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -73,18 +76,12 @@ void MainWindow::on_pushButton_2_clicked()
     if(image.data) {
         ui->pushButton->setEnabled(true);
     }
-    image.copyTo(result);
     //ui->label->show();
-    frush(result);
+    frush(image);
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     aws(image);
-    image.copyTo(result);
-    QImage img = ConvertImage(result);
-    ui->label->setPixmap(QPixmap::fromImage(img));
-    ui->label->resize(ui->label->pixmap()->size());
-  //  ui->pushButton->setEnabled(false);
-    frush(result);
+    frush(image);
 }
