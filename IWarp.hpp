@@ -2,48 +2,44 @@
 #define ALGO_HPP
 
 #include<QObject>
-#include<opencv2/opencv.hpp>
+#include<QtCore>
+#include<cmath>
+#include<iostream>
 
-class Algo: public QObject {
-    Q_OBJECT
-public:
-    explicit Algo(int _r = 10):radius(_r){
-        enable = false;
-    }
-private:
-    int radius;
-    int deformValue;
-    bool enable;
-private slots :
-    void DrawCircle(cv::Mat& img,int x,int y){
-        cv::circle(img,cv::Point(x,y),radius,cv::Scalar(255,255,255));
-        emit refrush(img);
-    }
-    void SetRadius(int _r){
-        if(_r > 0 && _r * _r < MAXR){
-            radius = _r;
-        }
-    }
-#ifdef IWarp
-    void IwarpDeform(cv::Mat& img,int x,int y,int w,int h){
-        if(!enable) return ;
+
+const double pi = std::acos(-1.0);
+const int MAXR = 250;
+
+namespace IWarp{
+//#ifdef IWarp
+    void IwarpDeform(QImage& img,int x,int y){
+       // if(!enable) return ;
+
+        int r = radius;
         if(x < r || x + r > w || y < r || y + r > h){
-            emit iwarp_err(QString("exceed the bound !"));
+         //   emit iwarp_err(QString("exceed the bound !"));
+            return ;
         }
         int x0 = -r, x1 = r, y0 = -r, y1 = r;
         // x0, y0 stand for the left buttom point, and x1, y1 is the oppisite
         int r2 = radius * radius;
         for(int yi = y0; yi <= y1 ; yi ++)
             for(int xi = x0; xi <= x1; xi ++){
-                int len2 = (xi*xi + yi*yi) / r2; // dis^2 / r^2
-                if(len2 < MAXR){
-                    ptr = (y + yi)
-                }
+                qDebug() << "pos: "<<yi<<" "<<xi<<"\n";
+                double len2 = (xi*xi + yi*yi) / r2; // dis^2 / r^2
+                qDebug() << "len2: "<<len2<<"\n";
+                if(len2 < 1.0){
+                    double deformValue = 0.1 * deformAmount * std::pow(std::cos(std::sqrt(len2) * pi) * 0.5,0.7);
+                    qDebug() << std::cos(std::sqrt(len2) * pi) <<"\n";
+                    qDebug() << std::pow(std::cos(std::sqrt(len2) * pi) * 0.5,0.7) <<"\n";
+                    qDebug() << deformAmount <<"\n";
+                    double nvx = -deformValue * xi;
+                    double nvy = -deformValue * yi; // (x,y) is replaced by (nvx,nvy)
+                    int xv = (int)nvx + x + xi,yv = (int) nvy + y + yi;
+                    //Regular(nvx + x + xi , nvy + y + yi, xv,yv);
+
+                   }
             }
     }
-#endif
-signals :
-    void refrush(cv::Mat&);
 };
-
 #endif // ALGO_HPP

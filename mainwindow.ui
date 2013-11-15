@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="AWBbtn">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -27,7 +27,7 @@
      <string>auto white balance</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="LoadFileBtn">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -40,17 +40,14 @@
      <string>open file</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="imgEditor" name="ImgEditor" native="true">
     <property name="geometry">
      <rect>
-      <x>180</x>
-      <y>10</y>
-      <width>271</width>
-      <height>191</height>
+      <x>200</x>
+      <y>40</y>
+      <width>211</width>
+      <height>141</height>
      </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
   </widget>
@@ -75,6 +72,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>imgEditor</class>
+   <extends>QWidget</extends>
+   <header>imgEditor.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
