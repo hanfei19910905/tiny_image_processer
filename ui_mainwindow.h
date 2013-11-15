@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.0.1
+** Created by: Qt User Interface Compiler version 5.0.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -14,14 +14,13 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
+#include "imgEditor.hpp"
 
 QT_BEGIN_NAMESPACE
 
@@ -29,11 +28,9 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
-    QLabel *label;
-    QSpinBox *xShow;
-    QSpinBox *yShow;
+    QPushButton *AWBbtn;
+    QPushButton *LoadFileBtn;
+    imgEditor *ImgEditor;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -45,25 +42,15 @@ public:
         MainWindow->resize(458, 274);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        pushButton = new QPushButton(centralWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(20, 180, 141, 27));
-        pushButton_2 = new QPushButton(centralWidget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setGeometry(QRect(20, 10, 99, 27));
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(180, 10, 271, 191));
-        xShow = new QSpinBox(centralWidget);
-        xShow->setObjectName(QStringLiteral("xShow"));
-        xShow->setGeometry(QRect(30, 60, 61, 27));
-        xShow->setReadOnly(true);
-        xShow->setMaximum(100000);
-        yShow = new QSpinBox(centralWidget);
-        yShow->setObjectName(QStringLiteral("yShow"));
-        yShow->setGeometry(QRect(30, 100, 61, 27));
-        yShow->setReadOnly(true);
-        yShow->setMaximum(100000);
+        AWBbtn = new QPushButton(centralWidget);
+        AWBbtn->setObjectName(QStringLiteral("AWBbtn"));
+        AWBbtn->setGeometry(QRect(20, 180, 141, 27));
+        LoadFileBtn = new QPushButton(centralWidget);
+        LoadFileBtn->setObjectName(QStringLiteral("LoadFileBtn"));
+        LoadFileBtn->setGeometry(QRect(20, 10, 99, 27));
+        ImgEditor = new imgEditor(centralWidget);
+        ImgEditor->setObjectName(QStringLiteral("ImgEditor"));
+        ImgEditor->setGeometry(QRect(200, 40, 211, 141));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -84,9 +71,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "auto white balance", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "open file", 0));
-        label->setText(QString());
+        AWBbtn->setText(QApplication::translate("MainWindow", "auto white balance", 0));
+        LoadFileBtn->setText(QApplication::translate("MainWindow", "open file", 0));
     } // retranslateUi
 
 };

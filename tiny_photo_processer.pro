@@ -18,7 +18,8 @@ SOURCES += main.cpp\
         mainwindow.cpp
 
 HEADERS  += mainwindow.h \
-    DisplayImage.hpp \
-    algo.hpp
+    imgEditor.hpp \
+    awb.hpp \
+    IWarp.hpp
 
 FORMS    += mainwindow.ui
