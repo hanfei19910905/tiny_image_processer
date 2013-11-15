@@ -1,7 +1,13 @@
-#include <opencv2/opencv.hpp>
+#ifndef AWB_HPP
+#define AWB_HPP
+
 #include <iostream>
+#include <QImage>
+#include <cmath>
 
 // personal tools
+
+namespace AWB{
 
 template<typename T> void chkmin(T &a, T b){if(a == -1 || a > b) a = b;}
 template<typename T> void chkmax(T &a, T b){if(a == -1 || a < b) a = b;}
@@ -14,18 +20,27 @@ color_t lut[3][MAXC];
 color_t low_input[4], high_input[4];
 int num[4][MAXC] ;
 
-int aws(cv::Mat& image)
+int awb(QImage& image)
 {
     memset(low_input,-1,sizeof(low_input));
     memset(high_input,-1,sizeof(high_input));
     memset(num,0,sizeof(num));
     memset(lut,0,sizeof(lut));
+    for(int i = 0; i < image.width(); i++)
+        for(int j = 0; j < image.height(); j++){
+            QRgb c = image.pixel(i,j);
+            num[0][qRed(c)] ++;
+            num[1][qGreen(c)] ++;
+            num[2][qBlue(c)] ++;
+        }
+    /*
     for(cv::Mat_<cv::Vec3b>::iterator it = image.begin<cv::Vec3b>(); it != image.end<cv::Vec3b>(); ++it){
         for(int channel = 0; channel < 3; ++ channel){
             color_t i = (*it)[channel];
             num[channel][i] += 1;
         }
     }
+    */
     for(int i = 0; i < 4; i++){
         double sum = 0;
         for(int j = 0; j < MAXC; j ++){
@@ -67,7 +82,16 @@ int aws(cv::Mat& image)
         }
     }
 
-
+    for(int i = 0; i < image.width(); i++)
+        for(int j = 0; j < image.height(); j++){
+            QRgb c = image.pixel(i,j);
+            int red = qRed(c);
+            int green = qGreen(c);
+            int blue = qBlue(c);
+            QRgb value = qRgb(lut[0][red],lut[0][green],lut[0][blue]);
+            image.setPixel(i,j,value);
+        }
+    /*
     cv::Mat result ( image);
 
     for(cv::Mat_<cv::Vec3b>::iterator it = result.begin<cv::Vec3b>(); it != result.end<cv::Vec3b>(); ++it){
@@ -76,7 +100,11 @@ int aws(cv::Mat& image)
             value = lut[channel][value];
         }
     }
+    */
 //    cout<< sizeof(image[0][0]) <<endl;
 
     return 1;
 }
+};
+
+#endif
