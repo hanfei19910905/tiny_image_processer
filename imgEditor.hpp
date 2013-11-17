@@ -1,10 +1,11 @@
-#ifndef IMGEDITRO_HPP
+#ifndef IMGEDITOR_HPP
 #define IMGEDITOR_HPP
 
 #include<QtGui>
 #include<QWidget>
 #include<QRegion>
 #include "awb.hpp"
+#include<iostream>
 
 class imgEditor : public QWidget {
     Q_OBJECT
@@ -14,12 +15,14 @@ public :
         setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
         img = QImage(16,16,QImage::Format_ARGB32);
         img.fill(qRgba(0,0,0,0));
+        std::cout <<"hello!\n";
 
     }
 
 protected:
     void paintEvent(QPaintEvent *event){
         QPainter painter(this);
+        std::cout <<"paint!\n";
         for(int i =0; i <img.width(); i++)
             for(int j =0; j< img.height(); j++){
                 QRect rect = pixelRect(i,j);
