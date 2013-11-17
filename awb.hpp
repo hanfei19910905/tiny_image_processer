@@ -27,6 +27,7 @@ static int awb(QImage& image)
     for(int i = 0; i < image.width(); i++)
         for(int j = 0; j < image.height(); j++){
             QRgb c = image.pixel(i,j);
+//            std::cout<<qRed(c)<<" "<<qGreen(c)<<" "<<qBlue(c)<<"\n";
             num[0][qRed(c)] ++;
             num[1][qGreen(c)] ++;
             num[2][qBlue(c)] ++;
@@ -39,7 +40,7 @@ static int awb(QImage& image)
         }
     }
     */
-    for(int i = 0; i < 4; i++){
+    for(int i = 0; i < 3; i++){
         double sum = 0;
         for(int j = 0; j < MAXC; j ++){
             sum += num[i][j];
@@ -86,7 +87,7 @@ static int awb(QImage& image)
             int red = qRed(c);
             int green = qGreen(c);
             int blue = qBlue(c);
-            QRgb value = qRgb(lut[0][red],lut[0][green],lut[0][blue]);
+            QRgb value = qRgb(lut[0][red],lut[1][green],lut[2][blue]);
             image.setPixel(i,j,value);
         }
     /*
