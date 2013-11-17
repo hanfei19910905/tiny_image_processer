@@ -28,7 +28,7 @@ void MainWindow::on_LoadFileBtn_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("OpenImage"),
-                                                    ".",
+                                                    "./sample/",
                                                     tr("Image Files(*.png *.jpg *.jpeg *.bmp)"));
     ui->AWBbtn->setEnabled(true);
     emit LoadImage(fileName);
