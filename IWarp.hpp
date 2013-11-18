@@ -10,21 +10,23 @@
 const double pi = std::acos(-1.0);
 const int MAXR = 250;
 
-namespace IWarp{
-//#ifdef IWarp
-class iWarpSolver : public QObject{
-    Q_OBJECT
+struct Point{
+    double x,y;
+    Point(){}
+    Point(int _x,int _y):x(_x),y(_y){}
+};
+class iWarpSolver   {
     private:
         int radius,w,h;
         double deformAmount;
-        std::vector<int> deform_vector;
+        std::vector<Point> deform_vectors;
         
         void GetDeformVector(double x,double y,double &xv,double &yv){
             int    i, xi, yi;
             double dx, dy, my0, my1, mx0, mx1;
-
+            if(x < 0 || x >= h - 1 || y < 0 || y >= w -1) {xv = yv = 0;return ;}
             xi = (int) x;
-            yi = (gint) y;
+            yi = (int) y;
             dx = x-xi;
             dy = y-yi;
             i = (yi * w + xi);
@@ -49,38 +51,60 @@ class iWarpSolver : public QObject{
         }
     public :
     iWarpSolver(int _r = 20, double _d = 0.3):
-        randius(_r),deformAmount(_d){}
+        radius(_r),deformAmount(_d){}
     bool IwarpDeform(QImage& img,int x,int y){
 
         int r = radius;
         w = img.width();
         h = img.height();
         int x0 = -r, x1 = r, y0 = -r, y1 = r;
-        if(x0 < 0 || x1 > img.width()) return 0;
-        if(y0 < 0 || y1 > img.height()) return 0;
+        if(x0 + x < 0 || x1 + x >= img.height()) return 0;
+        if(y + y0 < 0 || y1 + y >= img.width()) return 0;
         // x0, y0 stand for the left buttom point, and x1, y1 is the oppisite
         int r2 = radius * radius;
-        std::vector<std::vector<int> > deform_area_vector(2*r + 1,vector<int>(2*r + 1,0) );
+        int L = 2*r2 + 1;
+        std::vector<Point> deform_area_vector(L*L,Point(0,0));
+        std::vector<QRgb> dst;
+        dst.resize(w*h);
         for(int yi = y0; yi <= y1 ; yi ++)
             for(int xi = x0; xi <= x1; xi ++){
                 double len2 = (xi*xi + yi*yi) / r2; // dis^2 / r^2
+                int fptr = (yi + r) * L + (xi + r);
                 if(len2 < 1.0){
                     // cal the nvx , nvy
                     double deformValue = 0.1 * deformAmount * std::pow(std::cos(std::sqrt(len2) * pi) * 0.5,0.7);
                     double nvx = -deformValue * xi;
                     double nvy = -deformValue * yi; // (x,y) is replaced by (nvx,nvy)
-                    double vx,yv;
+                    double xv,yv;
                     GetDeformVector(nvx,nvy,xv,yv);
-                    
-                   }
+                    xv += nvx, yv += nvy;
+                    deform_area_vector[fptr] = Point(yv,xv);
+                    double nx = xv + xi + x;
+                    double ny = yv + yi + y;
+                    dst[fptr] = img.pixel((int)nx,(int)ny);
+                } else {
+                    dst[fptr] = img.pixel(x + xi, y + yi);
+                }
             }
-
+        for(int xi = x0; xi <= x1; xi ++)
+            for(int yi = y0; yi <= y1; yi ++){
+                double len2 = (xi*xi + yi*yi) / r2;
+                if(len2 < 1.0){
+                    int fptr = (yi + r) * L + (xi + r);
+                    img.setPixel(xi,yi,dst[fptr]);
+                    int ptr =  (y + yi) * w + x + xi;
+                    deform_vectors[ptr] = deform_area_vector[fptr];
+                }
+            }
 
         return 1;
     }
     void InitVec(int w,int h){
-        deform_vector = std::vector<std::vector<int> >(h,std::vector<int>(w,0));
+        deform_vectors = std::vector<Point>(w*h,Point(0,0));
     }
-}
-}
+    void Set(int _r,double _d){
+        radius = _r;
+        deformAmount = _d;
+    }
+};
 #endif // ALGO_HPP
