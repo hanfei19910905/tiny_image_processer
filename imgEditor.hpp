@@ -45,7 +45,6 @@ protected:
         std::cout <<"press!\n";
         // debug
         
-        int r = 20;
         int x= event -> pos().x();
         int y= event -> pos().y();
         //DrawCircle(x,y,r);
