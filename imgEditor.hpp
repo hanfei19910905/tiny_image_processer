@@ -16,8 +16,8 @@ public :
     QWidget(par){
         setAttribute(Qt::WA_StaticContents);
         setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-        img = QImage(16,16,QImage::Format_ARGB32);
-        img.fill(qRgba(0,0,0,0));
+        result = QImage(16,16,QImage::Format_ARGB32);
+        result.fill(qRgba(0,0,0,0));
         iwarpHelper = new iWarpSolver();
     }
     ~imgEditor(){
@@ -27,30 +27,29 @@ public :
 protected:
     void paintEvent(QPaintEvent *event){
         QPainter painter(this);
-        for(int i =0; i <img.width(); i++)
-            for(int j =0; j< img.height(); j++){
+        for(int i =0; i <result.width(); i++)
+            for(int j =0; j< result.height(); j++){
                 QRect rect = pixelRect(i,j);
                 if(event->region().intersects(rect)){
-                    QColor c = QColor::fromRgba(img.pixel(i,j));
+                    QColor c = QColor::fromRgba(result.pixel(i,j));
                     painter.fillRect(rect,c);
                 }
             }
     }
     void DrawCircle(int x,int y,int r){
-        QPainter painter(&img);
+        QPainter painter(&result);
         painter.setPen(QPen(QColor(0,0,255)));
         painter.drawEllipse(QRect(x-r,y-r,2*r+1,2*r+1));
     }
     void mousePressEvent(QMouseEvent *event){
-        std::cout <<"press!\n";
         // debug
         
-        int r = 20;
         int x= event -> pos().x();
         int y= event -> pos().y();
         //DrawCircle(x,y,r);
+        std::cout <<"press: "<<x<<" "<<y<<std::endl;
         //
-        iwarpHelper -> IwarpDeform(img,x,y);
+        iwarpHelper -> IwarpDeform(img,result,x,y);
         
         update();
         updateGeometry();
@@ -62,12 +61,13 @@ private slots:
         if(img.load(path)){
             resize(img.width(),img.height());
             iwarpHelper -> InitVec(img.width(),img.height());
+            result = img.copy();
             update();
             updateGeometry();
         }
     }
     void img_awb(){
-        AWB::awb(img);
+        AWB::awb(result);
         update();
         updateGeometry();
     }
@@ -84,7 +84,7 @@ private:
     }
 
 private:
-    QImage img;
+    QImage img,result;
     iWarpSolver *iwarpHelper;
 };
 
