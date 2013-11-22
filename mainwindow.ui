@@ -76,7 +76,7 @@
   <customwidget>
    <class>imgEditor</class>
    <extends>QWidget</extends>
-   <header>imgEditor.hpp</header>
+   <header>imgEditor.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
